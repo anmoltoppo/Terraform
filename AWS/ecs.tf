@@ -1,0 +1,112 @@
+# A name to describe the environment we're creating.
+environment = "acc"
+
+# The AWS-CLI profile for the account to create resources in.
+aws_profile = "default"
+
+# The AWS region to create resources in.
+aws_region = "eu-west-1"
+
+# The AMI to seed ECS instances with.
+# Leave empty to use the latest Linux 2 ECS-optimized AMI by Amazon.
+aws_ecs_ami = ""
+
+# The IP range to attribute to the virtual network.
+# The allowed block size is between a /16 (65,536 addresses) and /28 (16 addresses).
+vpc_cidr = "10.0.0.0/16"
+
+# The IP ranges to use for the public subnets in your VPC.
+# Must be within the IP range of your VPC.
+public_subnet_cidrs = ["10.0.0.0/24", "10.0.1.0/24"]
+
+# The IP ranges to use for the private subnets in your VPC.
+# Must be within the IP range of your VPC.
+private_subnet_cidrs = ["10.0.50.0/24", "10.0.51.0/24"]
+
+# The AWS availability zones to create subnets in.
+# For high-availability, we need at least two.
+availability_zones = ["eu-west-1a", "eu-west-1b"]
+
+# Maximum number of instances in the ECS cluster.
+max_size = 1
+
+# Minimum number of instances in the ECS cluster.
+min_size = 1
+
+# Ideal number of instances in the ECS cluster.
+desired_capacity = 1
+
+# Size of instances in the ECS cluster.
+instance_type = "t2.micro"
+
+provider "aws" {
+  region  = var.aws_region
+  profile = var.aws_profile
+}
+
+module "ecs" {
+  source = "./modules/ecs"
+
+  environment          = var.environment
+  cluster              = var.environment
+  cloudwatch_prefix    = "${var.environment}"           #See ecs_instances module when to set this and when not!
+  vpc_cidr             = var.vpc_cidr
+  public_subnet_cidrs  = var.public_subnet_cidrs
+  private_subnet_cidrs = var.private_subnet_cidrs
+  availability_zones   = var.availability_zones
+  max_size             = var.max_size
+  min_size             = var.min_size
+  desired_capacity     = var.desired_capacity
+  key_name             = aws_key_pair.ecs.key_name
+  instance_type        = var.instance_type
+  ecs_aws_ami          = var.aws_ecs_ami
+}
+
+resource "aws_key_pair" "ecs" {
+  key_name   = "ecs-key-${var.environment}"
+  public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCtMljjj0Ccxux5Mssqraa/iHHxheW+m0Rh17fbd8t365y9EwBn00DN/0PjdU2CK6bjxwy8BNGXWoUXiSDDtGqRupH6e9J012yE5kxhpXnnkIcLGjkAiflDBVV4sXS4b3a2LSXL5Dyb93N2GdnJ03FJM4qDJ8lfDQxb38eYHytZkmxW14xLoyW5Hbyr3SXhdHC2/ecdp5nLNRwRWiW6g9OA6jTQ3LgeOZoM6dK4ltJUQOakKjiHsE+jvmO0hJYQN7+5gYOw0HHsM+zmATvSipAWzoWBWcmBxAbcdW0R0KvCwjylCyRVbRMRbSZ/c4idZbFLZXRb7ZJkqNJuy99+ld41 ecs@aws.fake"
+}
+
+variable "environment" {
+  description = "A name to describe the environment we're creating."
+}
+variable "aws_profile" {
+  description = "The AWS-CLI profile for the account to create resources in."
+}
+variable "aws_region" {
+  description = "The AWS region to create resources in."
+}
+variable "aws_ecs_ami" {
+  description = "The AMI to seed ECS instances with."
+}
+variable "vpc_cidr" {
+  description = "The IP range to attribute to the virtual network."
+}
+variable "public_subnet_cidrs" {
+  description = "The IP ranges to use for the public subnets in your VPC."
+  type = list
+}
+variable "private_subnet_cidrs" {
+  description = "The IP ranges to use for the private subnets in your VPC."
+  type = list
+}
+variable "availability_zones" {
+  description = "The AWS availability zones to create subnets in."
+  type = list
+}
+variable "max_size" {
+  description = "Maximum number of instances in the ECS cluster."
+}
+variable "min_size" {
+  description = "Minimum number of instances in the ECS cluster."
+}
+variable "desired_capacity" {
+  description = "Ideal number of instances in the ECS cluster."
+}
+variable "instance_type" {
+  description = "Size of instances in the ECS cluster."
+}
+
+output "default_alb_target_group" {
+  value = module.ecs.default_alb_target_group
+}
