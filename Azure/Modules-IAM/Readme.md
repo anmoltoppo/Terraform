@@ -1,5 +1,6 @@
 # Azure # 
 # RBAC Documentation #
+# https://docs.microsoft.com/en-us/azure/active-directory/hybrid/
 # https://docs.microsoft.com/en-us/azure/role-based-access-control/
 
 # Cloud Adoption Framework for Azure DevOps Governance #
@@ -7,6 +8,13 @@
 
 # Tutorial: Grant a group access to Azure resources using Azure PowerShell #
 # https://docs.microsoft.com/en-us/azure/role-based-access-control/tutorial-role-assignments-group-powershell
+
+# Assign a role to a cloud group in Azure Active Directory #
+# https://docs.microsoft.com/en-us/azure/active-directory/roles/groups-assign-role
+
+# Assign custom roles with resource scope using PowerShell in Azure Active Directory
+# https://docs.microsoft.com/en-us/azure/active-directory/roles/custom-assign-powershell
+
 
 # Terraform #
 # https://github.com/hashicorp/terraform-provider-azuread

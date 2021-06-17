@@ -22,8 +22,9 @@ assignable_scopes = var.azurerm_subscription.primary.id
 ##### Role Assignment #####
 
 resource "azurerm_role_assignment" "security_reader" {
- scope = var.azurerm_subscription.primary.id
+ scope = var.azurerm_subscription.primary.id # # is the role assign at subscription Level
+  #scope                 = var.azurerm_management_group.primary.id # is the role assign at management Level
  role_definition_id = azurerm_role_definition.security_reader.id
  role_definition_name = "Reader"
- principal_id = var.azurerm_principle_id.object_id
+ principal_id = var.azurerm_principle_id.object_id # Azure AD Group principle ID # 
 }
