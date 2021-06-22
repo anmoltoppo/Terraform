@@ -28,16 +28,3 @@ resource "azurerm_role_assignment" "iam_reader" {
  tags = var.enviroment
 }
 
-resource "azurerm_role_assignment" "network_reader" {
- scope = var.scopeID
- role_definition_id = azurerm_role_definition.network_reader.role_definition_resource_id
- principal_id = var.groupID # The ID of the Principal Group to assign the Role Definition to.#
- tags = var.enviroment
-}
-
-resource "azurerm_role_assignment" "security_reader" {
- scope = var.scopeID
- role_definition_id = azurerm_role_definition.security_reader.role_definition_resource_id
- principal_id = var.groupID # The ID of the Principal Group to assign the Role Definition to.#
- tags = var.enviroment 
-}
