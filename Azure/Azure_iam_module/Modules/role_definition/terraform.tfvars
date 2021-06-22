@@ -1,0 +1,5 @@
+subscriptionID = ""
+enviroment = [
+    "string",
+    "string"
+    ]
